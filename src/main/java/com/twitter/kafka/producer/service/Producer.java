@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 public class Producer {
@@ -18,6 +20,6 @@ public class Producer {
 
     public void sendMessage(String message) {
         log.info(String.format("#### -> Producing message -> %s", message));
-        this.kafkaTemplate.send(topic, message);
+        this.kafkaTemplate.send(topic, UUID.randomUUID().toString(), message);
     }
 }
