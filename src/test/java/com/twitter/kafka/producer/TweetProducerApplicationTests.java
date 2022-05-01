@@ -6,6 +6,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import twitter4j.TwitterException;
 
 @SpringBootTest(properties = "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}")
 @EmbeddedKafka
@@ -14,6 +15,11 @@ class TweetProducerApplicationTests {
 
 	@Autowired
 	Producer producer;
+
+	@Test
+	void testConnectionWithTwitter() throws TwitterException {
+		producer.connectWithTwitter();
+	}
 
 	@Test
 	void pushtoKafka() {
