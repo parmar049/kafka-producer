@@ -21,7 +21,7 @@ class TweetProducerApplicationTests {
 
 	@Test
 	void testTweeterStreamAPI() throws IOException, URISyntaxException {
-		new TwitterFilteredStream(producer).streamTweet();
+		new TwitterFilteredStream(producer).streamTweet("eid");
 	}
 
 	@Test

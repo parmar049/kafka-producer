@@ -37,14 +37,13 @@ public class TwitterFilteredStream {
 
     public TwitterFilteredStream(TwitterDataProducer producer) throws IOException, URISyntaxException {
         this.producer = producer;
-        streamTweet();
     }
 
     // To set your enviornment variables in your terminal run the following line:
-    public void streamTweet() throws IOException, URISyntaxException {
+    public void streamTweet(String rileFilterValue) throws IOException, URISyntaxException {
         String bearerToken = TwitterConfig.BEARERTOKEN;
         Map<String, String> rules = new HashMap<>();
-        rules.put("eid", "eid-tweets");
+        rules.put(rileFilterValue, "filtered-tweets");
         setupRules(bearerToken, rules);
         connectStream(bearerToken);
     }
@@ -68,7 +67,7 @@ public class TwitterFilteredStream {
             BufferedReader reader = new BufferedReader(new InputStreamReader((entity.getContent())));
             String line = reader.readLine();
             while (line != null) {
-                System.out.println(line);
+                log.info(line);
                 log.info("Pushing data to kafka ::");
                 producer.sendMessage(line);
                 line = reader.readLine();
