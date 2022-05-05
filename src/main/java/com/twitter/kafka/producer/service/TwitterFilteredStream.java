@@ -15,6 +15,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -26,40 +27,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
- * Sample code to demonstrate the use of the Filtered Stream endpoint
- * */
 @Slf4j
 @Service
 public class TwitterFilteredStream {
 
-    private final TwitterDataProducer producer;
+    private final KafkaDataProducer producer;
 
-    public TwitterFilteredStream(TwitterDataProducer producer) throws IOException, URISyntaxException {
+    private final TwitterConfig twitterConfig;
+
+    @Autowired
+    public TwitterFilteredStream(KafkaDataProducer producer, TwitterConfig twitterConfig) throws IOException, URISyntaxException {
         this.producer = producer;
+        this.twitterConfig = twitterConfig;
     }
 
-    // To set your enviornment variables in your terminal run the following line:
-    public void streamTweet(String rileFilterValue) throws IOException, URISyntaxException {
-        String bearerToken = TwitterConfig.BEARERTOKEN;
+    public void streamTweet(String filterValue) throws IOException, URISyntaxException {
         Map<String, String> rules = new HashMap<>();
-        rules.put(rileFilterValue, "filtered-tweets");
-        setupRules(bearerToken, rules);
-        connectStream(bearerToken);
+        rules.put(filterValue, filterValue.concat("-tweets"));
+        setupRules(rules);
+        connectStream();
     }
 
     /*
      * This method calls the filtered stream endpoint and streams Tweets from it
      */
-    private void connectStream(String bearerToken) throws IOException, URISyntaxException {
+    private void connectStream() throws IOException, URISyntaxException {
 
         HttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(RequestConfig.custom()
                 .setCookieSpec(CookieSpecs.STANDARD).build()).build();
 
-        URIBuilder uriBuilder = new URIBuilder("https://api.twitter.com/2/tweets/search/stream");
+        URIBuilder uriBuilder = new URIBuilder(twitterConfig.getStream_api_url());
 
         HttpGet httpGet = new HttpGet(uriBuilder.build());
-        httpGet.setHeader("Authorization", String.format("Bearer %s", bearerToken));
+        httpGet.setHeader("Authorization", String.format("Bearer %s", twitterConfig.getBearer_access_token()));
 
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity entity = response.getEntity();
@@ -79,27 +79,27 @@ public class TwitterFilteredStream {
     /*
      * Helper method to setup rules before streaming data
      * */
-    private static void setupRules(String bearerToken, Map<String, String> rules) throws IOException, URISyntaxException {
-        List<String> existingRules = getRules(bearerToken);
+    private void setupRules(Map<String, String> rules) throws IOException, URISyntaxException {
+        List<String> existingRules = getRules(twitterConfig.getBearer_access_token());
         if (existingRules.size() > 0) {
-            deleteRules(bearerToken, existingRules);
+            deleteRules(existingRules);
         }
-        createRules(bearerToken, rules);
+        createRules(rules);
     }
 
     /*
      * Helper method to create rules for filtering
      * */
-    private static void createRules(String bearerToken, Map<String, String> rules) throws URISyntaxException, IOException {
+    private void createRules(Map<String, String> rules) throws URISyntaxException, IOException {
         HttpClient httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(RequestConfig.custom()
                         .setCookieSpec(CookieSpecs.STANDARD).build())
                 .build();
 
-        URIBuilder uriBuilder = new URIBuilder("https://api.twitter.com/2/tweets/search/stream/rules");
+        URIBuilder uriBuilder = new URIBuilder(twitterConfig.getStream_api_url().concat("/rules"));
 
         HttpPost httpPost = new HttpPost(uriBuilder.build());
-        httpPost.setHeader("Authorization", String.format("Bearer %s", bearerToken));
+        httpPost.setHeader("Authorization", String.format("Bearer %s", twitterConfig.getBearer_access_token()));
         httpPost.setHeader("content-type", "application/json");
         StringEntity body = new StringEntity(getFormattedString("{\"add\": [%s]}", rules));
         httpPost.setEntity(body);
@@ -113,14 +113,14 @@ public class TwitterFilteredStream {
     /*
      * Helper method to get existing rules
      * */
-    private static List<String> getRules(String bearerToken) throws URISyntaxException, IOException {
+    private List<String> getRules(String bearerToken) throws URISyntaxException, IOException {
         List<String> rules = new ArrayList<>();
         HttpClient httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(RequestConfig.custom()
                         .setCookieSpec(CookieSpecs.STANDARD).build())
                 .build();
 
-        URIBuilder uriBuilder = new URIBuilder("https://api.twitter.com/2/tweets/search/stream/rules");
+        URIBuilder uriBuilder = new URIBuilder(twitterConfig.getStream_api_url().concat("/rules"));
 
         HttpGet httpGet = new HttpGet(uriBuilder.build());
         httpGet.setHeader("Authorization", String.format("Bearer %s", bearerToken));
@@ -143,16 +143,16 @@ public class TwitterFilteredStream {
     /*
      * Helper method to delete rules
      * */
-    private static void deleteRules(String bearerToken, List<String> existingRules) throws URISyntaxException, IOException {
+    private void deleteRules(List<String> existingRules) throws URISyntaxException, IOException {
         HttpClient httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(RequestConfig.custom()
                         .setCookieSpec(CookieSpecs.STANDARD).build())
                 .build();
 
-        URIBuilder uriBuilder = new URIBuilder("https://api.twitter.com/2/tweets/search/stream/rules");
+        URIBuilder uriBuilder = new URIBuilder(twitterConfig.getStream_api_url().concat("/rules"));
 
         HttpPost httpPost = new HttpPost(uriBuilder.build());
-        httpPost.setHeader("Authorization", String.format("Bearer %s", bearerToken));
+        httpPost.setHeader("Authorization", String.format("Bearer %s", twitterConfig.getBearer_access_token()));
         httpPost.setHeader("content-type", "application/json");
         StringEntity body = new StringEntity(getFormattedString("{ \"delete\": { \"ids\": [%s]}}", existingRules));
         httpPost.setEntity(body);

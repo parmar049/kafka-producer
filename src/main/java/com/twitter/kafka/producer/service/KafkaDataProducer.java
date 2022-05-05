@@ -3,8 +3,6 @@ package com.twitter.kafka.producer.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +10,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class TwitterDataProducer {
+public class KafkaDataProducer {
 
     @Value("${spring.kafka.topic.name}")
     private String topic;

@@ -1,7 +1,18 @@
 package com.twitter.kafka.producer.config;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@ConfigurationProperties("twitter-config")
+@Configuration
+@Getter
+@Setter
 public class TwitterConfig {
 
-    public static final String BEARERTOKEN = "AAAAAAAAAAAAAAAAAAAAAIhLcAEAAAAA2D6fRLsuOQTYr0UTHYJ7I5vrryY%3Dp3uhgqC2tc4rTVjAkP42H5DhQfXmgyVAcu8hHHS3w2Un7PCy9e";
+    private String stream_api_url;
+
+    private String bearer_access_token;
 
 }

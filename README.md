@@ -8,8 +8,7 @@ to start Kafka server use command
 
 Improvements :::
     
-1. Make rule configurable so that it can be changed dynamically
-2. Configure twitter rest API URL in yaml   
+   
 3. Add test case to test producer code, consume and test in unit test   
 4. Implementation of docker
 5. Integration with AWS to get token from AWS parameter store instead of Hardcoding   
