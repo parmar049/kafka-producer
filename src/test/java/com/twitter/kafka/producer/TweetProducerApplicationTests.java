@@ -23,12 +23,12 @@ class TweetProducerApplicationTests {
 	@Autowired
 	TwitterConfig twitterConfig;
 
-	@Test
+	//@Test
 	void testTweeterStreamAPI() throws IOException, URISyntaxException {
 		new TwitterFilteredStream(producer, twitterConfig).streamTweet("eid");
 	}
 
-	@Test
+	//@Test
 	void pushtoKafka() {
 		producer.sendMessage("hello kafka");
 	}
