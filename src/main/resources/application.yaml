@@ -1,8 +1,10 @@
 server:
-  port: 8080
-  servlet.context-path: /twitter
+  port: 8081
+  servlet.context-path: /coopX
 
 spring:
+  application:
+    name: kafka-tweet-producer
   kafka:
     topic:
       name: tweets
@@ -11,3 +13,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       group-id: twitter
+
+twitter-config:
+  stream-api-url: https://api.twitter.com/2/tweets/search/stream
+  bearer-access-token: AAAAAAAAAAAAAAAAAAAAAIhLcAEAAAAA2D6fRLsuOQTYr0UTHYJ7I5vrryY%3Dp3uhgqC2tc4rTVjAkP42H5DhQfXmgyVAcu8hHHS3w2Un7PCy9e

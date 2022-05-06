@@ -1,9 +1,18 @@
 package com.twitter.kafka.producer.config;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@ConfigurationProperties("twitter-config")
+@Configuration
+@Getter
+@Setter
 public class TwitterConfig {
 
-    public static final String CONSUMER_KEYS= "H8***42";
-    public static final String CONSUMER_SECRETS= "xn***dI";
-    public static final String SECRET = "SPz***Xg";
-    public static final String TOKEN = "13***1";
+    private String stream_api_url;
+
+    private String bearer_access_token;
+
 }
