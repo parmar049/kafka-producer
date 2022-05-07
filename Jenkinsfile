@@ -38,8 +38,7 @@ pipeline {
         stage('Building Docker image') {
             steps{
                 script {
-                  sh "mvn clean install"
-                  dockerImage = docker.build "${mvn }:${IMAGE_TAG}"
+                  dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
                 }
             }
         }
