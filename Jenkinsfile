@@ -26,12 +26,20 @@ pipeline {
             }
         }
 
+        stage('Build and Test') {
+            steps{
+                script {
+                  sh "mvn clean install"
+                }
+            }
+        }
+
         // Building Docker images
         stage('Building Docker image') {
             steps{
                 script {
                   sh "mvn clean install"
-                  dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+                  dockerImage = docker.build "${mvn }:${IMAGE_TAG}"
                 }
             }
         }
