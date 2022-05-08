@@ -1,8 +1,8 @@
 package com.twitter.kafka.producer;
 
 import com.twitter.kafka.producer.config.TwitterConfig;
-import com.twitter.kafka.producer.service.TwitterFilteredStream;
-import com.twitter.kafka.producer.service.KafkaDataProducer;
+import com.twitter.kafka.producer.service.TwitterFilteredStreamImpl;
+import com.twitter.kafka.producer.service.KafkaDataProducerImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +18,18 @@ import java.net.URISyntaxException;
 class TweetProducerApplicationTests {
 
 	@Autowired
-	KafkaDataProducer producer;
+	KafkaDataProducerImpl producer;
 
 	@Autowired
 	TwitterConfig twitterConfig;
 
 	//@Test
 	void testTweeterStreamAPI() throws IOException, URISyntaxException {
-		new TwitterFilteredStream(producer, twitterConfig).streamTweet("eid");
+		new TwitterFilteredStreamImpl(producer, twitterConfig).streamTweet("eid");
 	}
 
-	//@Test
+	@Test
+	//Test will fail if its unable to push the message to Kafka topic
 	void pushtoKafka() {
 		producer.sendMessage("hello kafka");
 	}
