@@ -1,10 +1,8 @@
 package com.twitter.kafka.producer.controller;
 
-import com.twitter.kafka.producer.service.TwitterFilteredStream;
+import com.twitter.kafka.producer.service.TwitterFilteredStreamImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -15,17 +13,16 @@ import java.net.URISyntaxException;
 @Slf4j
 public class TwitterStreamController {
 
-    private final TwitterFilteredStream filteredStream;
+    private final TwitterFilteredStreamImpl filteredStream;
 
     @Autowired
-    public TwitterStreamController(TwitterFilteredStream filteredStream) {
+    public TwitterStreamController(TwitterFilteredStreamImpl filteredStream) {
         this.filteredStream = filteredStream;
     }
 
     @GetMapping("/produceDataStream")
-    public ResponseEntity getFilteredTweetStream(@RequestParam String ruleFilter) throws IOException, URISyntaxException {
+    public void getFilteredTweetStream(@RequestParam String ruleFilter) throws IOException, URISyntaxException {
         log.info("<< Producing data stream >>");
         filteredStream.streamTweet(ruleFilter);
-        return new ResponseEntity(HttpStatus.OK);
     }
 }

@@ -1,30 +1,31 @@
-to start streaming hit URL
+# **This application developed in Spring-boot 2.6.x framework, using Java 11 version**
 
-localhost:8080/coopX/v1/streamTweets/produceDataStream?ruleFilter=modi
+###### **Application Functionality**
 
-to start Kafka server use command
+This application is producing tweets to Kafka cluster. It is using Twitter Streaming
+API to get tweets as soon as they are available based on the filter provided.
 
-.\bin\windows\kafka-server-start.bat .\config\server.properties
+First way to get tweets is using twitter4J library which connects to v1.1 version, but due to limit on per day tweet stream,
+its decided not use that and use latest version FIltered Stream API.
+We are using filtered stream API V2 of Twitter, more documentation available here ::
 
-Improvements :::
-    
-   
-3. Add test case to test producer code, consume and test in unit test   
-4. Implementation of docker
-5. Integration with AWS to get token from AWS parameter store instead of Hardcoding   
-6. Build CI/CD pipeline to deploy in cloud
-7. Implementation of authentication with Kafka broker
+###### Complete Project Architecture
+
+![Alt text](src/main/resources/documents/Complete-setup.png "Architecture")
+
+###### Project Scope
+
+![Alt text](src/main/resources/documents/project-scope.png "Project-Scope")
+
+###### **Prerequisite**
+
+To run this application make sure you have connectivity with Kafka broker server.
+Currently master branch is connecting to localhost that means kafka broker server should be up and running locally.
+
+Another branch `karan/CloudSetup` is in progress to connect with Kafka brokers running on cloud.
+ 
+Command to run project locally::
+mvn spring-boot:run
 
 
-To start jenkins in docker
-docker run -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts-jdk11
 
-
-Points for PPT Preparation :
-    1. How we can install Kafka , by Own in EC2 but had problesm
-
-https://www.youtube.com/watch?v=HtU9pb18g5Q
-
-https://www.youtube.com/watch?v=lOdrdV0eDrs
-
-https://www.youtube.com/watch?v=z7_LdCVnCRU
